@@ -70,7 +70,7 @@ const Navbar = ({ onOpenFilter, onOpenSearch }) => {
       {/* =======================
           2. MOBILE NAVBAR (Floating Pill)
       ======================== */}
-      <div className="md:hidden fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+      <div className="md:hidden sticky top-4 left-0 right-0 z-50 flex justify-center px-4">
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 shadow-xl rounded-full px-5 py-3 flex items-center justify-between w-full max-w-sm">
           <div className="flex items-center">
             <img
