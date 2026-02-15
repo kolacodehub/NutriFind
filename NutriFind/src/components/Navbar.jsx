@@ -101,7 +101,7 @@ const Navbar = () => {
       {/* =======================
           2. MOBILE NAVBAR (Pill)
       ======================== */}
-      <div className="md:hidden w-full flex justify-center pt-4 px-4 absolute top-0 left-0 z-40">
+      <div className="md:hidden w-full flex justify-center pt-4 px-4 fixed top-2 left-0 z-40">
         <div className="bg-white border border-gray-200 shadow-lg rounded-full px-4 py-2 flex items-center justify-between w-full max-w-sm">
           <div className="scale-75 origin-left ml-2">
             <img src={logo_black} alt="" width={70} />
