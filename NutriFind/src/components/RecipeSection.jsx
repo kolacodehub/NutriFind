@@ -56,7 +56,7 @@ const RecipeSection = ({ onRecipeClick }) => {
   ];
 
   return (
-    <section className="w-full bg-white py-16">
+    <section className="bg-white py-16 max-w-[1200px] mx-auto w-full">
       {/* HEADER */}
       <div className="text-center max-w-2xl mx-auto px-6 mb-16">
         <span className="bg-[#FF6B6B] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">

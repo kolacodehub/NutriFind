@@ -5,6 +5,7 @@ import FilterSidebar from "./FilterSidebar";
 import SearchModal from "./SearchModal";
 import RecipeSection from "./RecipeSection";
 import RecipeDetails from "./RecipeDetails";
+import Footer from "./Footer";
 
 const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -90,6 +91,8 @@ const Home = () => {
           <RecipeSection onRecipeClick={handleRecipeClick} />
         </>
       )}
+
+      <Footer />
     </div>
   );
 };
