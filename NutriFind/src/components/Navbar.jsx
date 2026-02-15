@@ -1,7 +1,7 @@
 import React from "react";
 import logo_black from "../assets/LogoBlack.png";
 
-const Navbar = ({ onOpenFilter, onOpenSearch, onNavigate }) => {
+const Navbar = ({ onOpenSearch, onNavigate }) => {
   // 1. ADDED onNavigate prop
   // Removed the console.log for cleaner code
 
