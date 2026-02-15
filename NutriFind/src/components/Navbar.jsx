@@ -1,17 +1,20 @@
 import React from "react";
 import logo_black from "../assets/LogoBlack.png";
 
-const Navbar = ({ onOpenFilter, onOpenSearch }) => {
-  // Added onOpenSearch prop
-  console.log(onOpenFilter);
-  
+const Navbar = ({ onOpenFilter, onOpenSearch, onNavigate }) => {
+  // 1. ADDED onNavigate prop
+  // Removed the console.log for cleaner code
+
   return (
     <>
       {/* =======================
           1. DESKTOP NAVBAR 
       ======================== */}
       <nav className="hidden md:flex w-full bg-white px-10 py-5 items-center justify-between shadow-sm font-sans z-50 relative">
-        <div className="cursor-pointer">
+        <div
+          className="cursor-pointer"
+          onClick={() => onNavigate("home")} // 2. Logo clicks go home
+        >
           <img
             src={logo_black}
             alt="NutriFind"
@@ -19,7 +22,7 @@ const Navbar = ({ onOpenFilter, onOpenSearch }) => {
           />
         </div>
 
-        {/* Desktop Search - You can also attach logic here if needed */}
+        {/* Desktop Search */}
         <div className="flex flex-1 max-w-lg mx-12">
           <div className="flex w-full bg-[#F3F4F6] rounded overflow-hidden">
             <input
@@ -47,13 +50,23 @@ const Navbar = ({ onOpenFilter, onOpenSearch }) => {
         </div>
 
         <div className="flex items-center gap-8 text-sm font-bold">
-          <a href="#" className="text-[#6BB03F]">
+          {/* 3. Button replaces <a> for Home */}
+          <button
+            onClick={() => onNavigate("home")}
+            className="text-[#6BB03F] hover:text-green-800 transition-colors cursor-pointer"
+          >
             Home
-          </a>
-          <a href="#" className="text-gray-500 hover:text-[#6BB03F]">
+          </button>
+
+          {/* 4. Button replaces <a> for About Us */}
+          <button
+            onClick={() => onNavigate("about")}
+            className="text-gray-500 hover:text-[#6BB03F] transition-colors cursor-pointer"
+          >
             About Us
-          </a>
-          <button className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2 hover:shadow-md transition-shadow">
+          </button>
+
+          <button className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2 hover:shadow-md transition-shadow bg-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -70,9 +83,12 @@ const Navbar = ({ onOpenFilter, onOpenSearch }) => {
       {/* =======================
           2. MOBILE NAVBAR (Floating Pill)
       ======================== */}
-      <div className="md:hidden sticky top-4 left-0 right-0 z-50 flex justify-center px-4">
+      <div className="md:hidden fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 shadow-xl rounded-full px-5 py-3 flex items-center justify-between w-full max-w-sm">
-          <div className="flex items-center">
+          <div
+            className="flex items-center"
+            onClick={() => onNavigate("home")} // 5. Mobile Logo -> Home
+          >
             <img
               src={logo_black}
               alt="NutriFind"
@@ -81,15 +97,22 @@ const Navbar = ({ onOpenFilter, onOpenSearch }) => {
           </div>
 
           <div className="flex items-center gap-4 text-sm font-semibold">
-            <a href="#" className="text-[#6BB03F]">
+            {/* 6. Mobile Links */}
+            <button
+              onClick={() => onNavigate("home")}
+              className="text-[#6BB03F] cursor-pointer"
+            >
               Home
-            </a>
-            <a href="#" className="text-[#2F3E46]">
+            </button>
+            <button
+              onClick={() => onNavigate("about")}
+              className="text-[#2F3E46] cursor-pointer"
+            >
               About Us
-            </a>
+            </button>
           </div>
 
-          {/* SEARCH BUTTON: Now triggers onOpenSearch */}
+          {/* SEARCH BUTTON */}
           <button
             onClick={onOpenSearch}
             className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"

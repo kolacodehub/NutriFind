@@ -43,7 +43,7 @@ const RecipeSection = ({ onRecipeClick }) => {
       strCategory: "Chicken",
       strArea: "Japanese",
       strMealThumb:
-        "https://www.themealdb.com/images/media/meals/wvpsxx1468256621.jpg",
+        "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=2000&auto=format&fit=crop",
     },
     {
       idMeal: "52855",
