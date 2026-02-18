@@ -61,7 +61,6 @@ const FilterSidebar = ({ isOpen, onClose }) => {
   );
 };
 
-// Helper for the checkboxes (No changes needed here)
 const Section = ({ title, items, checkedIdx, showMore }) => (
   <div>
     <h3 className="text-white font-bold mb-3">{title}</h3>

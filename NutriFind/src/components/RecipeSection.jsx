@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const RecipeSection = ({ onRecipeClick }) => {
-  // 1. STATE: Dummy Filters (Visual only for now)
   const [filters, setFilters] = useState({
     categories: [
       { label: "Beef", checked: true },
@@ -105,7 +104,6 @@ const RecipeSection = ({ onRecipeClick }) => {
               <RecipeCard
                 key={meal.idMeal}
                 data={meal}
-                // This triggers the function in Home.jsx
                 onClick={() => onRecipeClick(meal.idMeal)}
               />
             ))}
@@ -116,8 +114,6 @@ const RecipeSection = ({ onRecipeClick }) => {
   );
 };
 
-// ... (FilterGroup and RecipeCard sub-components remain the same as previous) ...
-// Ensure RecipeCard has the onClick prop attached to its button!
 
 const RecipeCard = ({ data, onClick }) => {
   const { strMeal, strMealThumb, strCategory, strArea } = data;
@@ -154,7 +150,6 @@ const RecipeCard = ({ data, onClick }) => {
   );
 };
 
-// FilterGroup component goes here... (Same as before)
 const FilterGroup = ({ title, items, group, onToggle }) => (
   <div>
     <h4 className="font-bold text-[#2F3E46] text-sm mb-3">{title}</h4>

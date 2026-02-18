@@ -1,18 +1,30 @@
-import Home from "./components/Home";
-import "./App.css";
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import SearchModal from "./components/SearchModal"; // Import your component
+import Home from "./pages/Home";
+import About from "./pages/AboutUs";
+import RecipeDetails from "./pages/RecipeDetails";
 
 function App() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
-    // 1. OUTER WRAPPER: Full width & Height background
-    <div className="min-h-screen bg-white w-full font-sans">
-      {/* 2. CENTERED CONTAINER: 
-          - max-w-[1440px]: Restricts width on huge screens
-          - mx-auto: Centers the app
-          - md:px-8: Adds the side padding on desktop
-      */}
-      <div >
-        <Home />
-      </div>
+    <div className="min-h-screen bg-white font-sans">
+      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
+
+
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSearch={(query) => console.log("Searching for:", query)}
+      />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/recipe/:id" element={<RecipeDetails />} />
+      </Routes>
     </div>
   );
 }
