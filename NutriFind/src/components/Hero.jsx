@@ -1,4 +1,5 @@
 import React from "react";
+import heroImg from "../assets/hero.png";
 
 const Hero = () => {
   return (
@@ -15,8 +16,7 @@ const Hero = () => {
         <div
           className="absolute inset-0 bg-cover bg-center md:hidden"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=2000&auto=format&fit=crop')",
+            backgroundImage: `url(${heroImg})`,
           }}
         />
 
@@ -24,8 +24,7 @@ const Hero = () => {
         <div
           className="absolute inset-0 bg-cover bg-center hidden md:block"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=2000&auto=format&fit=crop')",
+            backgroundImage: `url(${heroImg})`,
           }}
         />
 
