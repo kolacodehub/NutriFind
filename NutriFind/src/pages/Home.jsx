@@ -9,10 +9,10 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // 1. STATE: Only track selected meal (List vs Details view)
+  // State to manage view switching: If null, show Home; if populated, show Details
   const [selectedMeal, setSelectedMeal] = useState(null);
 
-  // MOCK DATA
+  // Placeholder data to simulate a full API response when a recipe is clicked
   const MOCK_DETAILED_MEAL = {
     idMeal: "52952",
     strMeal: "Beef Wellington",
@@ -29,25 +29,24 @@ const Home = () => {
     // ... add other ingredients as needed
   };
 
-  // 2. HANDLER: Show Details
+  // Triggered when a user selects a card: Loads mock data and resets scroll position
   const handleRecipeClick = (id) => {
     console.log("User clicked recipe ID:", id);
     setSelectedMeal(MOCK_DETAILED_MEAL);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // 3. HANDLER: Go Back to List
+  // Return to the main listing view
   const handleBack = () => {
     setSelectedMeal(null);
   };
 
-  // Layout Helper
+  // Global container utility to keep content centered on large screens
   const containerClass = "max-w-[1440px] mx-auto md:px-8 w-full";
 
   return (
     <div className="min-h-screen bg-white w-full font-sans">
-
-      {/* OVERLAYS */}
+      {/* Global Overlays: Rendered outside the main flow to handle z-indexing correctly */}
       <FilterSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -58,30 +57,27 @@ const Home = () => {
         onSearch={(q) => console.log(q)}
       />
 
-      {/* MAIN CONTENT */}
+      {/* Main Layout Area */}
       <main className="flex-1">
+        {/* Conditional Rendering: Switch between Details View and Landing View */}
         {selectedMeal ? (
-          // VIEW 1: RECIPE DETAILS
+          // Detailed View: Contained within the central layout
           <div className={containerClass}>
             <RecipeDetails meal={selectedMeal} onBack={handleBack} />
           </div>
         ) : (
-          // VIEW 2: HOME (Hero + List)
+          // Landing View: Hero (Full Width) + Recipe Grid (Contained)
           <>
-            {/* Hero is full width */}
             <div className="w-full">
               <Hero />
             </div>
 
-            {/* Recipes are contained */}
             <div className={containerClass}>
               <RecipeSection onRecipeClick={handleRecipeClick} />
             </div>
           </>
         )}
       </main>
-
-      
     </div>
   );
 };

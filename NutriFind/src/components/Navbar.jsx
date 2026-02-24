@@ -1,13 +1,35 @@
-import { Link } from "react-router-dom"; 
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo_black from "../assets/LogoBlack.png";
 
 const Navbar = ({ onOpenSearch }) => {
+  // Manage local state for the desktop search input field
+  const [query, setQuery] = useState("");
+  // Hook to programmatically redirect users to the search results route
+  const navigate = useNavigate();
+
+  // Validates the input and navigates to the dynamically encoded search URL
+  const handleSearch = () => {
+    if (query.trim()) {
+      navigate(`/search/${encodeURIComponent(query)}`);
+      setQuery("");
+    }
+  };
+
+  // Listens for the "Enter" keypress so users don't have to manually click the search icon
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <>
-      {/* =======================
-          1. DESKTOP NAVBAR 
-      ======================== */}
-      <nav className="hidden md:flex w-full bg-white px-10 py-5 items-center justify-between shadow-sm font-sans z-50 relative">
+      {/* --- DESKTOP NAVIGATION ---
+        Hidden on mobile devices. Fixes to the top of the viewport with a shadow 
+        on medium screens (md) and larger.
+      */}
+      <nav className="hidden md:flex fixed w-full bg-white px-10 py-5 items-center justify-between shadow-sm font-sans z-50">
         <Link to="/" className="cursor-pointer">
           <img
             src={logo_black}
@@ -16,15 +38,21 @@ const Navbar = ({ onOpenSearch }) => {
           />
         </Link>
 
-        {/* Desktop Search */}
+        {/* Central Search Bar container */}
         <div className="flex flex-1 max-w-lg mx-12">
           <div className="flex w-full bg-[#F3F4F6] rounded overflow-hidden">
             <input
               type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Search for recipes..."
               className="w-full bg-transparent px-4 py-3 text-sm text-gray-700 outline-none placeholder-gray-400"
             />
-            <button className="bg-[#6BB03F] px-6 flex items-center justify-center hover:bg-green-700 transition-colors">
+            <button
+              onClick={handleSearch}
+              className="bg-[#6BB03F] px-6 flex items-center justify-center hover:bg-green-700 transition-colors"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 text-white"
@@ -43,8 +71,8 @@ const Navbar = ({ onOpenSearch }) => {
           </div>
         </div>
 
+        {/* Right-side links and Call-to-Action */}
         <div className="flex items-center gap-8 text-sm font-bold">
-          {/* Home Link */}
           <Link
             to="/"
             className="text-[#6BB03F] hover:text-green-800 transition-colors"
@@ -52,7 +80,6 @@ const Navbar = ({ onOpenSearch }) => {
             Home
           </Link>
 
-          {/* About Link */}
           <Link
             to="/about"
             className="text-gray-500 hover:text-[#6BB03F] transition-colors"
@@ -74,9 +101,10 @@ const Navbar = ({ onOpenSearch }) => {
         </div>
       </nav>
 
-      {/* =======================
-          2. MOBILE NAVBAR (Floating Pill)
-      ======================== */}
+      {/* --- MOBILE NAVIGATION ---
+        Floating pill design visible only on small screens. 
+        Uses backdrop-blur for a modern aesthetic over page content.
+      */}
       <div className="md:hidden fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 shadow-xl rounded-full px-5 py-3 flex items-center justify-between w-full max-w-sm">
           <Link to="/" className="flex items-center">
@@ -96,7 +124,7 @@ const Navbar = ({ onOpenSearch }) => {
             </Link>
           </div>
 
-          {/* SEARCH BUTTON */}
+          {/* Triggers the Mobile Search Modal via the passed-in prop */}
           <button
             onClick={onOpenSearch}
             className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"

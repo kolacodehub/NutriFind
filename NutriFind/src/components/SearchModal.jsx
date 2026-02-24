@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const SearchModal = ({ isOpen, onClose, onSearch }) => {
+const SearchModal = ({ isOpen, onClose }) => {
+  // Local state to track the user's search input
   const [query, setQuery] = useState("");
+  // Hook to handle programmatic routing to the search results page
+  const navigate = useNavigate();
 
-  // Handle "Enter" key press
+  // Listens for the "Enter" keypress to trigger the search without needing a button click
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit();
@@ -11,24 +15,29 @@ const SearchModal = ({ isOpen, onClose, onSearch }) => {
   };
 
   const handleSubmit = () => {
+    // Only proceed if the query isn't just empty spaces
     if (query.trim()) {
-      onSearch(query); // Calls the API function in Home.jsx
-      onClose(); // Optional: Close modal after search
+      // Construct the search URL, safely encoding the user's input to handle special characters
+      navigate(`/search/${encodeURIComponent(query)}`);
+      // Close the modal overlay
+      onClose();
+      // Clear the input field for the next time the modal is opened
+      setQuery("");
     }
   };
 
-  // CSS for visibility animation
+  // If the modal isn't toggled open, don't render anything to the DOM
   if (!isOpen) return null;
 
   return (
+    // Fullscreen frosted-glass overlay that sits above all other content (z-[80])
     <div className="fixed inset-0 z-[80] bg-white/95 backdrop-blur-md flex flex-col p-6 animate-in fade-in duration-200">
-      {/* HEADER: Close Button */}
+      {/* Top-right close action */}
       <div className="flex justify-end mb-8">
         <button
           onClick={onClose}
           className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
         >
-          {/* Close Icon (X) */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 text-gray-500"
@@ -46,35 +55,52 @@ const SearchModal = ({ isOpen, onClose, onSearch }) => {
         </button>
       </div>
 
-      {/* INPUT SECTION */}
-      <div className="w-full max-w-2xl mx-auto">
-        <h2 className="text-2xl font-bold text-[#2F3E46] mb-4 text-center">
+      {/* Main search input area vertically pushed down and centered on the screen */}
+      <div className="w-full max-w-2xl mx-auto mt-20">
+        <h2 className="text-3xl font-extrabold text-[#2F3E46] mb-8 text-center">
           What are you craving?
         </h2>
 
-        <div className="relative">
+        <div className="relative group">
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type 'Pasta', 'Vegan', etc..."
-            className="w-full text-xl md:text-3xl border-b-2 border-gray-300 py-4 px-2 bg-transparent outline-none focus:border-[#6BB03F] text-gray-800 placeholder-gray-300 text-center"
+            placeholder="Type 'Pasta', 'Chicken', etc..."
+            className="w-full text-2xl md:text-4xl border-b-2 border-gray-200 py-4 px-2 bg-transparent outline-none focus:border-[#6BB03F] text-gray-800 placeholder-gray-300 text-center transition-colors font-bold"
           />
 
-          {/* Search Button (Optional visual cue) */}
+          {/* Absolute positioned search button inside the input area */}
           <button
             onClick={handleSubmit}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-[#6BB03F] font-bold text-sm uppercase tracking-wide hover:text-green-700"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6BB03F] font-bold text-sm uppercase tracking-wide hover:text-green-700 bg-white/50 px-3 py-1 rounded-lg"
           >
             Search
           </button>
         </div>
 
-        <p className="text-center text-gray-400 mt-4 text-sm">
-          Press <b>Enter</b> to search
+        <p className="text-center text-gray-400 mt-6 text-sm">
+          Press <b>Enter</b> to see results
         </p>
+
+        {/* Pre-defined search chips for quick navigation */}
+        <div className="flex flex-wrap justify-center gap-2 mt-8">
+          {["Chicken", "Pasta", "Seafood", "Salad"].map((tag) => (
+            <button
+              key={tag}
+              onClick={() => {
+                setQuery(tag);
+                // A small delay ensures the state finishes updating before the navigation triggers
+                setTimeout(handleSubmit, 100);
+              }}
+              className="px-4 py-2 bg-gray-50 text-gray-500 rounded-full text-sm hover:bg-[#EBF5E0] hover:text-[#4C8229] transition-colors"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

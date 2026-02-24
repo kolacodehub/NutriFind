@@ -1,14 +1,12 @@
 import React from "react";
 
 const About = () => {
-  // Common container class to match Home page width
+  // Reusable container class to ensure content aligns perfectly with the global layout constraints
   const containerClass = "max-w-[1440px] mx-auto md:px-8 w-full";
 
   return (
     <div className="w-full bg-white font-sans animate-in fade-in duration-500">
-      {/* 1. HERO HEADER 
-          - 'pt-32' ensures text clears the fixed navbar on mobile.
-      */}
+      {/* Header Section: Light gray background with centered text to introduce the brand */}
       <div className="bg-[#F3F4F6] pt-32 pb-16 md:py-24 text-center px-6">
         <h1 className="text-4xl md:text-5xl font-extrabold text-[#2F3E46] mb-4">
           We Are <span className="text-[#6BB03F]">NutriFind</span>
@@ -20,11 +18,11 @@ const About = () => {
         </p>
       </div>
 
-      {/* 2. OUR MISSION SECTION (Wrapped in container) */}
       <div className={containerClass}>
         <div className="px-6 py-16 md:py-24">
+          {/* Mission Grid: Stacks vertically on mobile, switches to a 2-column layout on medium screens */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Image */}
+            {/* Left Column: Hero Image with rounded corners and shadow */}
             <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
               <img
                 src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=2000&auto=format&fit=crop"
@@ -33,7 +31,7 @@ const About = () => {
               />
             </div>
 
-            {/* Text Content */}
+            {/* Right Column: Mission Text and Stats */}
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-[#2F3E46]">Our Mission</h2>
               <p className="text-gray-600 leading-relaxed">
@@ -48,7 +46,7 @@ const About = () => {
                 you nourish your body and delight your taste buds.
               </p>
 
-              {/* Stats Row */}
+              {/* Statistics Row: A mini-grid to showcase key metrics with visual dividers */}
               <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100 mt-4">
                 <div>
                   <span className="block text-3xl font-bold text-[#6BB03F]">
@@ -80,13 +78,14 @@ const About = () => {
         </div>
       </div>
 
-      {/* 3. VALUES SECTION (Wrapped in container) */}
       <div className={containerClass}>
+        {/* Features Section: Uses a dark card background to create visual contrast against the white page */}
         <div className="bg-[#1F1E1B] text-white py-16 px-6 rounded-3xl mx-4 md:mx-0 mb-12">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8 font-[cursive] text-[#84CC16]">
               Why Choose Us?
             </h2>
+            {/* Feature Cards Grid: Responsive 1-column mobile to 3-column desktop layout */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="p-6 border border-gray-700 rounded-xl hover:border-[#6BB03F] transition-colors">
                 <div className="text-4xl mb-4">🥗</div>
@@ -114,8 +113,6 @@ const About = () => {
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };

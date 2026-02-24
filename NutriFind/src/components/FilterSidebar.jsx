@@ -1,24 +1,30 @@
 import React from "react";
 import logo_white from "../assets/LogoWhite.png";
 
-const FilterSidebar = ({ isOpen, onClose }) => {
+// Reusable sidebar component to handle recipe filtering logic and UI
+const FilterSidebar = ({ isOpen, onClose, filters, onToggle }) => {
   return (
     <div
-      className={`fixed inset-0 z-[60] flex transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
+      // Controls the overall visibility and fading transition of the modal overlay
+      className={`fixed inset-0 z-[60] flex transition-opacity duration-300 ${
+        isOpen
+          ? "opacity-100 visible"
+          : "opacity-0 invisible pointer-events-none"
+      }`}
     >
-      {/* Dark Background Overlay */}
+      {/* Backdrop overlay that clicks-to-close the sidebar */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       ></div>
 
-      {/* Sidebar Content */}
+      {/* Main sliding panel containing the filter options */}
       <div
-        className={`relative w-[85%] max-w-xs h-full bg-[#1F1E1B] p-6 overflow-y-auto transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`relative w-[85%] max-w-xs h-full bg-[#1F1E1B] p-6 overflow-y-auto transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        {/* Header: White Logo & Close Button */}
         <div className="flex items-center justify-between mb-8">
-          {/* LOGO IMAGE (White) */}
           <img
             src={logo_white}
             alt="NutriFind"
@@ -38,45 +44,61 @@ const FilterSidebar = ({ isOpen, onClose }) => {
         </h2>
 
         <div className="space-y-6">
-          <Section title="Diet" items={["Veggies", "Dairy"]} checkedIdx={0} />
-          <Section
-            title="Allergies"
-            items={["Gluten", "Lorem"]}
-            checkedIdx={0}
-          />
-          <Section
-            title="Cuisines"
-            items={["Pakistani", "Indian", "Persian", "British", "Irish"]}
-            checkedIdx={0}
-            showMore
-          />
-          <Section
-            title="Goals"
-            items={["Weight Loss", "Get Active"]}
-            checkedIdx={0}
-          />
+          {/* Only render filter sections if the filters object is populated */}
+          {filters && (
+            <>
+              <Section
+                title="Category"
+                group="categories"
+                items={filters.categories}
+                onToggle={onToggle}
+              />
+              <Section
+                title="Cuisine"
+                group="areas"
+                items={filters.areas}
+                onToggle={onToggle}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const Section = ({ title, items, checkedIdx, showMore }) => (
+// Helper component to render individual filter groups with custom checkbox styling
+const Section = ({ title, group, items, onToggle }) => (
   <div>
-    <h3 className="text-white font-bold mb-3">{title}</h3>
+    <h3 className="text-white font-bold mb-3 border-b border-gray-700 pb-2">
+      {title}
+    </h3>
     <ul className="space-y-3">
       {items.map((item, i) => (
-        <li key={i} className="flex items-center gap-3">
+        <li
+          key={i}
+          className="flex items-center gap-3 cursor-pointer group"
+          // Pass the specific group and index back to the parent to update state
+          onClick={() => onToggle(group, i)}
+        >
           <div
-            className={`w-5 h-5 rounded border flex items-center justify-center ${i === checkedIdx ? "bg-[#4C8229] border-[#4C8229]" : "border-gray-600"}`}
+            className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${
+              item.checked
+                ? "bg-[#4C8229] border-[#4C8229]"
+                : "border-gray-600 group-hover:border-[#4C8229]"
+            }`}
           >
-            {i === checkedIdx && <span className="text-white text-xs">✓</span>}
+            {/* Custom checkmark icon shown only when the item is selected */}
+            {item.checked && <span className="text-white text-xs">✓</span>}
           </div>
-          <span className="text-gray-300 text-sm">{item}</span>
+          <span
+            className={`text-sm transition-colors ${item.checked ? "text-white" : "text-gray-400 group-hover:text-white"}`}
+          >
+            {item.label}
+          </span>
         </li>
       ))}
     </ul>
-    {showMore && <p className="text-[#4C8229] text-xs mt-3">See more</p>}
   </div>
 );
 

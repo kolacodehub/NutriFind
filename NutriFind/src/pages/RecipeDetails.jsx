@@ -2,50 +2,41 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const RecipeDetails = () => {
-  const { id } = useParams(); // 1. Get the ID from the URL
+  const { id } = useParams(); // Extract the unique recipe ID from the URL path
   const navigate = useNavigate();
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 2. SIMULATE FETCHING DATA
-  // In a real app, you would fetch(`.../lookup.php?i=${id}`) here.
+  // Side effect hook to fetch the selected recipe's data when the component mounts or the ID changes
   useEffect(() => {
-    // Scroll to top when page loads
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); // Reset scroll position to the top of the page on load
 
-    // Simulating API delay
-    setTimeout(() => {
-      setMeal({
-        idMeal: id, // Use the ID from the URL
-        strMeal: "Beef Wellington",
-        strCategory: "Beef",
-        strArea: "British",
-        strInstructions:
-          "Preheat the oven to 220C/200C Fan/Gas 7.\n\nSit the 1kg beef fillet on a roasting tray, brush with 1 tbsp vegetable oil and season with pepper, then roast for 15 mins for medium-rare or 20 mins for medium. When the beef is cooked to your liking, remove from the oven to cool, then chill in the fridge for about 20 mins.\n\nWhile the beef is cooling, chop 250g chestnut mushrooms as finely as possible so they have the texture of coarse breadcrumbs. You can use a food processor to do this, but make sure you pulse-chop the mushrooms so they don’t become a slurry.\n\nHeat 2 tbsp of the oil and 50g butter in a large pan and fry the mushrooms on a medium heat, with 1 large thyme sprig, for about 10 mins stirring often, until you have a softened mixture. Season the mushroom mixture, pour over 100ml white wine and cook for about 10 mins until all the wine has been absorbed. The mixture should hold its shape when stirred. Remove the mushroom duxelles from the pan to cool and discard the thyme.\n\nOverlap two pieces of cling film over a large chopping board. Lay 12 slices prosciutto on the cling film, slightly overlapping, in a double row. Spread half the mushrooms over the prosciutto, then sit the fillet on it and spread the remaining mushrooms over. Use the cling film’s edges to draw the prosciutto around the fillet, then roll it into a sausage shape, twisting the ends of cling film to tighten it as you go. Chill the fillet while you roll out the pastry.",
-        strMealThumb:
-          "https://www.themealdb.com/images/media/meals/vvpprx1487325699.jpg",
-        strTags: "Meat,Pie,Main",
-        strYoutube: "https://www.youtube.com/watch?v=FS8u1PBJz_I",
-        strIngredient1: "Beef Fillet",
-        strMeasure1: "1 kg",
-        strIngredient2: "Mushrooms",
-        strMeasure2: "250g",
-        strIngredient3: "Parma Ham",
-        strMeasure3: "12 slices",
-        strIngredient4: "Puff Pastry",
-        strMeasure4: "400g",
-        strIngredient5: "Egg",
-        strMeasure5: "1 Beaten",
-        strIngredient6: "Vegetable Oil",
-        strMeasure6: "1 tbsp",
-        strIngredient7: "English Mustard",
-        strMeasure7: "2 tbsp",
-      });
-      setLoading(false);
-    }, 500);
+    const fetchMealDetails = async () => {
+      try {
+        setLoading(true);
+        // Ping TheMealDB's lookup endpoint to get the full details for the specific ID
+        const response = await fetch(
+          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`,
+        );
+        const data = await response.json();
+
+        if (data.meals && data.meals[0]) {
+          setMeal(data.meals[0]);
+        } else {
+          // Handle edge case: The API returned a successful response, but no meal matched the provided ID
+          setMeal(null);
+        }
+      } catch (error) {
+        console.error("Error fetching meal details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMealDetails();
   }, [id]);
 
-  // HELPER: Parse Ingredients
+  // Utility function to extract and pair ingredients with their exact measurements from the flattened API response
   const getIngredients = (mealData) => {
     let ingredients = [];
     for (let i = 1; i <= 20; i++) {
@@ -58,7 +49,7 @@ const RecipeDetails = () => {
     return ingredients;
   };
 
-  // HELPER: Youtube Embed
+  // Utility function to extract the standard YouTube video ID from a full watch URL for the iframe embed
   const getYoutubeEmbed = (url) => {
     if (!url) return null;
     const videoId = url.split("v=")[1];
@@ -71,24 +62,43 @@ const RecipeDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[#6BB03F] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-500 font-medium">Loading recipe...</p>
+        </div>
       </div>
     );
   }
 
-  if (!meal) return null;
+  if (!meal) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-[#2F3E46] mb-2">
+            Recipe Not Found
+          </h2>
+          <button
+            onClick={() => navigate("/")}
+            className="text-[#6BB03F] font-bold hover:underline"
+          >
+            Go back home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const ingredientsList = getIngredients(meal);
   const videoId = getYoutubeEmbed(meal.strYoutube);
 
   return (
-    <div className="w-full min-h-screen bg-white font-sans">
-      {/* HEADER SECTION */}
+    <div className="w-full min-h-screen bg-white font-sans animate-in fade-in duration-500">
+      {/* HEADER: Contains navigation back action and primary recipe metadata */}
       <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Back Button */}
+        {/* Back Button: Uses React Router's navigate(-1) to return to the previous view without losing history */}
         <button
-          onClick={() => navigate(-1)} // Go back in history
+          onClick={() => navigate(-1)}
           className="group flex items-center gap-2 text-gray-500 hover:text-[#6BB03F] transition-colors mb-8 mt-16 md:mt-0 font-medium"
         >
           <svg
@@ -105,10 +115,10 @@ const RecipeDetails = () => {
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          Back to Home
+          Back
         </button>
 
-        {/* Title & Metadata */}
+        {/* Title & Categorization Tags */}
         <div className="text-center md:text-left mb-8">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
             <span className="bg-[#EBF5E0] text-[#4C8229] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
@@ -125,7 +135,7 @@ const RecipeDetails = () => {
         </div>
       </div>
 
-      {/* HERO IMAGE (Full width on mobile, rounded on desktop) */}
+      {/* HERO IMAGE: Full-width container on mobile, rounded constrained container on desktop with a bottom gradient */}
       <div className="max-w-5xl mx-auto md:px-6 mb-12">
         <div className="w-full h-[300px] md:h-[500px] md:rounded-3xl overflow-hidden shadow-xl relative">
           <img
@@ -133,14 +143,13 @@ const RecipeDetails = () => {
             alt={meal.strMeal}
             className="w-full h-full object-cover object-center"
           />
-          {/* Overlay gradient for text readability if needed */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
       </div>
 
-      {/* CONTENT GRID */}
+      {/* MAIN CONTENT GRID: 1 column on mobile, 2 columns on large screens (Instructions left, Ingredients right) */}
       <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12 pb-20">
-        {/* LEFT COLUMN: Instructions */}
+        {/* LEFT COLUMN: Detailed cooking instructions with parsed whitespace formatting */}
         <div>
           <h2 className="text-2xl font-bold text-[#2F3E46] mb-6 flex items-center gap-2">
             <span className="text-[#6BB03F]">📝</span> Instructions
@@ -150,7 +159,7 @@ const RecipeDetails = () => {
             {meal.strInstructions}
           </div>
 
-          {/* Video */}
+          {/* Conditional Video Embed: Only renders if a valid YouTube ID was extracted */}
           {videoId && (
             <div className="mt-12">
               <h3 className="text-xl font-bold text-[#2F3E46] mb-6 flex items-center gap-2">
@@ -171,7 +180,7 @@ const RecipeDetails = () => {
           )}
         </div>
 
-        {/* RIGHT COLUMN: Ingredients (Sticky) */}
+        {/* RIGHT COLUMN: Sticky sidebar for the ingredients list so it stays visible while scrolling through instructions */}
         <div className="lg:sticky lg:top-8 h-fit">
           <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <h3 className="text-xl font-bold text-[#2F3E46] mb-6 border-b border-gray-100 pb-4 flex items-center justify-between">
